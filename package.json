@@ -1,0 +1,27 @@
+{
+    "name": "verostack-highcharts-builder",
+    "version": "1.0.0",
+    "description": "=== Verostack Custom Highcharts === Contributors: drewpayment Tags: highcharts Donate link: https://paypal.me/drewpayment?locale.x=en_US Requires at least: 4.5 Tested up to: 5.6 Requires PHP: 7.0 Stable tag: prod License: The MIT License",
+    "main": "dist/main.js",
+    "scripts": {
+        "build": "webpack -p",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "Drew Payment",
+    "license": "MIT",
+    "dependencies": {
+        "@babel/core": "^7.4.0",
+        "@babel/preset-env": "^7.4.2",
+        "babel-loader": "^8.0.5",
+        "clean-webpack-plugin": "^2.0.1",
+        "highcharts": "^7.0.3",
+        "html-webpack-plugin": "^3.2.0",
+        "jquery": "^3.3.1",
+        "requirejs": "^2.3.6",
+        "ts-loader": "^5.3.3",
+        "typescript": "^3.3.4000",
+        "url-search-params-polyfill": "^5.1.0",
+        "webpack": "^4.29.6",
+        "webpack-cli": "^3.3.0"
+    }
+}
