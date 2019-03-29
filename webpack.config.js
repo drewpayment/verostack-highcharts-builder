@@ -29,5 +29,5 @@ module.exports = {
     plugins: [
         new CleanWebpackPlugin()
     ],
-    devtool: 'eval-source-map'
+    // devtool: 'eval-source-map' // uncomment for dev
 }

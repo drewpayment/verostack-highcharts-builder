@@ -57,18 +57,18 @@ export class AppModule {
             categories: ['Courageous', 'Creative', 'Collaborative', 'Tactical'],
             labels: {
                 align: 'center',
-                distance: -5
+                distance: -5,
+                style: {
+                    color: '#FFF'
+                }
             },
-            gridLineWidth: 0
+            gridLineWidth: 1
         },
 
         yAxis: {
             // alternateGridColor: '#e18f00',
             gridLineInterpolation: 'polygon',
-            gridLineWidth: 0,
             minorTickWidth: 0,
-            // gridZIndex: -1,
-            lineWidth: 0,
             min: 0,
             labels: {
                 enabled: false
@@ -138,12 +138,14 @@ export class AppModule {
     private buildChart() {
         // BUILD CHART AND PUT ON DOM
         // temporary for testing... 
-        let imageToRemove = this.jq('.fl-photo-img.wp-image-953');
-        let container = imageToRemove.parent();
-        let col = container.closest('.fl-col').next();
-        col.empty();
-        col.width('400px');
-        col.height('400px');
+        // let imageToRemove = this.jq('.fl-photo-img.wp-image-953');
+        // let container = imageToRemove.parent();
+        // let col = container.closest('.fl-col').next();
+        // col.empty();
+        // col.width('400px');
+        // col.height('400px');
+
+        let col = this.jq('#vs-chart');
 
         this.updateChartData();
 
@@ -159,14 +161,44 @@ export class AppModule {
 
         const adjWidth = containerWidth * 0.10;
         const adjHeight = containerHeight * 0.10;
-        const q1Left = containerLeft + adjWidth;
-        const q1Top = containerTop + adjHeight;
+        const q1Left = (containerLeft + adjWidth) - 5;
+        const q1Top = (containerTop + adjHeight) - 5;
         const q1Width = (containerWidth - (adjWidth * 2)) / 2;
         const q1Height = (containerHeight - (adjHeight * 2)) / 2;
 
         (<Highcharts.SVGElement>chart.renderer.rect(q1Left, q1Top, q1Width, q1Height)
             .attr({
                 fill: '#e18f00',
+                zIndex: 0
+            }))
+            .add();
+
+        const q2Left = ((containerLeft + adjWidth) + q1Width) + 5;
+        const q2Top = (containerTop + adjHeight) - 5;
+
+        (<Highcharts.SVGElement>chart.renderer.rect(q2Left, q2Top, q1Width, q1Height)
+            .attr({
+                fill: '#744391',
+                zIndex: 0
+            }))
+            .add();
+
+        const q3Left = (containerLeft + adjWidth) - 5;
+        const q3Top = ((containerTop + adjHeight) + q1Height) + 5;
+
+        (<Highcharts.SVGElement>chart.renderer.rect(q3Left, q3Top, q1Width, q1Height)
+            .attr({
+                fill: '#c51735',
+                zIndex: 0
+            }))
+            .add();
+
+        const q4Left = ((containerLeft + adjWidth) + q1Width) + 5;
+        const q4Top = ((containerTop + adjHeight) + q1Height) + 5;
+
+        (<Highcharts.SVGElement>chart.renderer.rect(q4Left, q4Top, q1Width, q1Height)
+            .attr({
+                fill: '#1a764e',
                 zIndex: 0
             }))
             .add();
