@@ -28,5 +28,6 @@ module.exports = {
     },
     plugins: [
         new CleanWebpackPlugin()
-    ]
+    ],
+    devtool: 'eval-source-map'
 }

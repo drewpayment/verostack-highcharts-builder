@@ -79,6 +79,7 @@ if(!class_exists(vs_highcharts_builder)) {
 
 function highcharts_builder_init()
 {
+    wp_enqueue_style('vs-style', plugins_url('styles.css', __FILE__), array(), rand(1, 100));
     wp_enqueue_script('vs-main', plugins_url('dist/main.js', __FILE__), array(), rand(1, 100), true);
 }
 

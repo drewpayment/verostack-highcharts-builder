@@ -1,6 +1,7 @@
 import { HttpService, HttpParams } from './utils/http-service';
 import { coerceNumberProperty } from './utils/number-property';
 import * as Highcharts from 'highcharts';
+(<any>require('highcharts-more'))(Highcharts);
 const jQuery = require('jquery');
 
 const COOKIE_NAME = 'hc_urls';
@@ -29,7 +30,15 @@ export class AppModule {
     chartOptions:Highcharts.Options = {
         chart: {
             polar: true,
-            type: 'line'
+            type: 'line',
+            margin: [0, 0, 0, 0],
+            spacing: [0, 0, 0, 0]
+        },
+        plotOptions: {
+            line: {
+                color: '#000',
+                lineWidth: 2
+            }
         },
         credits: {
             enabled: false
@@ -40,20 +49,30 @@ export class AppModule {
         },
 
         pane: {
-            size: '80%',
+            size: '100%',
             startAngle: -45
         },
 
         xAxis: {
-            categories: ['Bold', 'Creative', 'Collaborative', 'Tactical'],
-            tickmarkPlacement: 'on',
-            lineWidth: 0
+            categories: ['Courageous', 'Creative', 'Collaborative', 'Tactical'],
+            labels: {
+                align: 'center',
+                distance: -5
+            },
+            gridLineWidth: 0
         },
 
         yAxis: {
+            // alternateGridColor: '#e18f00',
             gridLineInterpolation: 'polygon',
+            gridLineWidth: 0,
+            minorTickWidth: 0,
+            // gridZIndex: -1,
             lineWidth: 0,
-            min: 0
+            min: 0,
+            labels: {
+                enabled: false
+            }
         } as Highcharts.YAxisOptions,
 
         tooltip: {
@@ -62,6 +81,7 @@ export class AppModule {
         },
 
         legend: {
+            enabled: false,
             align: 'right',
             verticalAlign: 'middle',
             y: 70,
@@ -92,7 +112,11 @@ export class AppModule {
             this.urls = JSON.parse(cookie);
 
             for(let i = 0; i < this.urls.length; i++) {
-                const hostPath = this.urls[i].split('//')[1];
+                let hostPath = this.urls[i].split('//')[1];
+
+                if (hostPath.indexOf(':') > -1) {
+                    hostPath = hostPath.split(':')[0];
+                }
 
                 // if the current URL doesn't have a matching hostname + path, we skip to next iteration
                 if (this.currentUrl.indexOf(hostPath) < 0) continue;
@@ -113,7 +137,41 @@ export class AppModule {
 
     private buildChart() {
         // BUILD CHART AND PUT ON DOM
+        // temporary for testing... 
+        let imageToRemove = this.jq('.fl-photo-img.wp-image-953');
+        let container = imageToRemove.parent();
+        let col = container.closest('.fl-col').next();
+        col.empty();
+        col.width('400px');
+        col.height('400px');
+
+        this.updateChartData();
+
+        Highcharts.chart(col[0], this.chartOptions, 
+            (<Highcharts.ChartCallbackFunction>(<unknown>this.renderTheme)));
     }
+
+    private renderTheme = (chart:Highcharts.Chart) => {
+        const containerLeft = chart.plotLeft;
+        const containerTop = chart.plotTop;
+        const containerWidth = chart.plotWidth;
+        const containerHeight = chart.plotHeight;
+
+        const adjWidth = containerWidth * 0.10;
+        const adjHeight = containerHeight * 0.10;
+        const q1Left = containerLeft + adjWidth;
+        const q1Top = containerTop + adjHeight;
+        const q1Width = (containerWidth - (adjWidth * 2)) / 2;
+        const q1Height = (containerHeight - (adjHeight * 2)) / 2;
+
+        (<Highcharts.SVGElement>chart.renderer.rect(q1Left, q1Top, q1Width, q1Height)
+            .attr({
+                fill: '#e18f00',
+                zIndex: 0
+            }))
+            .add();
+    }
+
     private updateChartData() {
         (<any>this.chartOptions.series[0]).data.push(this.bold);
         (<any>this.chartOptions.series[0]).data.push(this.creative);
@@ -222,4 +280,3 @@ export class AppModule {
     // }
 
 }
-
