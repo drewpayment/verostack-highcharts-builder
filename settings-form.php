@@ -1,6 +1,4 @@
 <?php 
-use function YoastSEO_Vendor\GuzzleHttp\json_decode;
-
 defined( 'ABSPATH' ) or die( 'Unauthorized script loading. Please reload.' );
 
 $urls = get_option('vs_custom_hc_urls');
