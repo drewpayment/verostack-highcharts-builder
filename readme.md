@@ -2,6 +2,8 @@
 
 ### Custom implementation to create a spider web chart for http://innovation90.com/innovation-style-report-courageous
 
+![](screenshot-1.png)
+
 There is a small Wordpress bug that needs to be tackled to get this working. Open `~/wp-includes/capabilities.php` and at the top of the file modify so it looks like this: 
 
 ```
