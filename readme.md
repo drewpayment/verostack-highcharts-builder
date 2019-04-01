@@ -25,15 +25,39 @@ After you've saved this, go to the Wordpress editor for that page and place this
 
 Now, you can append the following querystring parameters to your full URL and the graph will be built: 
 
-`http://innovation90.com/innovation-style-report-courageous/?f=John&l=Doe&b=25&cr=28&co=31&t=19`
+- `/?f=John&l=Doe&b=67&cr=88&co=99&t=80&d=03-20-2019`
+
+(Full URL example) - 
+`http://innovation90.com/innovation-style-report-courageous/?f=John&l=Doe&b=67&cr=88&co=99&t=80&d=03-20-2019`
 
 ### Parameters: 
+
+URL Parameters - 
+
 - `f` = First Name
 - `l` = Last Name
+- `d` = Date - input format (`MM-DD-YYYY`)
 - `b` = Bold/Courageous
 - `cr` = Creative
 - `co` = Collaborative
-- `t` = Tactical
+- `t` = Tactical/Contemplative
+
+Page Attributes - 
+
+- Hero image name `div` ID: `vs-chart-hero-name` - template `${firstName} ${lastName}`
+- Hero image date `div` ID: `vs-chart-hero-date` - template `on ${date | date:'MMM-DD, YYYY'}`
+- Introductory text line ID: `vs-chart-intro-first-name` - template `Dear ${firstName}:`
+
+Chart Legend - 
+
+- Courageous ID: `vs-chart-legend-courageous` - template `Courageous: ${value}`
+- Creative ID: `vs-chart-legend-creative` - template `Creative: ${value}`
+- Contemplative (originally tactical) ID: `vs-chart-legend-contemplative` - template `Contemplative: ${value}`
+- Collaborative ID: `vs-chart-legend-collaborative` - template `Collaborative: ${value}`
+
+Step 1 Section - 
+
+- Full Name ID: `vs-chart-your-styole-name`
 
 ## Troubleshooting
 

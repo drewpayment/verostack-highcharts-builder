@@ -19,11 +19,13 @@ export class AppModule {
     // QUERY PARAMS
     firstName:string;
     lastName:string;
-    bold:number;
+    courageous:number;
     creative:number;
     collaborative:number;
-    tactical:number;
+    contemplative:number;
+    date:any;
     isParamsSet = false;
+    months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
     highcharts:typeof Highcharts = Highcharts;
     forceUpdate = false;
@@ -57,16 +59,19 @@ export class AppModule {
             categories: ['Courageous', 'Creative', 'Collaborative', 'Tactical'],
             labels: {
                 align: 'center',
-                distance: -5,
+                reserveSpace: false,
+                // distance: -5,
                 style: {
-                    color: '#FFF'
+                    color: '#FFF',
+                    fontSize: '16px',
+                    fontWeight: '600',
+                    // padding: '0'
                 }
             },
             gridLineWidth: 1
         },
 
         yAxis: {
-            // alternateGridColor: '#e18f00',
             gridLineInterpolation: 'polygon',
             minorTickWidth: 0,
             min: 0,
@@ -81,18 +86,22 @@ export class AppModule {
         },
 
         legend: {
-            enabled: false,
-            align: 'right',
-            verticalAlign: 'middle',
-            y: 70,
-            layout: 'vertical'
+            enabled: false
         },
 
         series: [{
             name: 'Score',
             data: [],
             pointPlacement: 'on'
-        }] as any
+        }] as any,
+
+        responsive: {
+            rules: [{
+                condition: {
+                    maxWidth: 550
+                },
+            }]
+        }
     };
 
     constructor() {
@@ -151,6 +160,15 @@ export class AppModule {
 
         Highcharts.chart(col[0], this.chartOptions, 
             (<Highcharts.ChartCallbackFunction>(<unknown>this.renderTheme)));
+
+        this.jq('#vs-chart-hero-name').text(`${this.firstName} ${this.lastName}`);
+        this.jq('#vs-chart-hero-date').text(`on ${this.date}`);
+        this.jq('#vs-chart-intro-first-name').text(`Dear ${this.firstName}:`);
+        this.jq('#vs-chart-legend-courageous').text(`${this.courageous}`);
+        this.jq('#vs-chart-legend-creative').text(`${this.creative}`);
+        this.jq('#vs-chart-legend-contemplative').text(`${this.contemplative}`);
+        this.jq('#vs-chart-legend-collaborative').text(`${this.collaborative}`);
+        this.jq('#vs-chart-your-style-name').text(`${this.firstName} ${this.lastName}`);
     }
 
     private renderTheme = (chart:Highcharts.Chart) => {
@@ -205,23 +223,41 @@ export class AppModule {
     }
 
     private updateChartData() {
-        (<any>this.chartOptions.series[0]).data.push(this.bold);
+        (<any>this.chartOptions.series[0]).data.push(this.courageous);
         (<any>this.chartOptions.series[0]).data.push(this.creative);
         (<any>this.chartOptions.series[0]).data.push(this.collaborative);
-        (<any>this.chartOptions.series[0]).data.push(this.tactical);
+        (<any>this.chartOptions.series[0]).data.push(this.contemplative);
         this.forceUpdate = true;
     }
 
     private setQueryParams() {
         const params = new URLSearchParams(window.location.search);
 
+        if (!this.checkParams(params)) {
+            return;
+        }
+
         this.firstName = params.get('f');
         this.lastName = params.get('l');
-        this.bold = coerceNumberProperty(params.get('b'));
+        this.courageous = coerceNumberProperty(params.get('b'));
         this.creative = coerceNumberProperty(params.get('cr'));
         this.collaborative = coerceNumberProperty(params.get('co'));
-        this.tactical = coerceNumberProperty(params.get('t'));
-        this.isParamsSet = true;
+        this.contemplative = coerceNumberProperty(params.get('t'));
+        let date = params.get('d');
+        
+        this.date = date == null ? new Date() : new Date(Date.parse(date));
+        this.date = this.months[this.date.getMonth()] + ' ' + this.date.getDate() + ', ' + this.date.getFullYear();
+    }
+
+    private checkParams(params:URLSearchParams):boolean {
+        if (!params.has('f') || !params.has('l') || !params.has('b') || !params.has('cr') || !params.has('co')
+            || !params.has('t') || !params.has('d')) {
+            
+            this.isParamsSet = false;
+        } else {
+            this.isParamsSet = true;
+        }
+        return this.isParamsSet;
     }
 
     private _cookieExists(cookieName:string):boolean {
