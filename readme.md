@@ -23,6 +23,14 @@ After you've saved this, go to the Wordpress editor for that page and place this
 <div id="vs-chart"></div>
 ```
 
+You must also place `id="{PageAttributeID}"` on the coordinating DOM elements according to the "Page Attributes" and "Chart Legend" below... e.g. I want a `div` on my page to use the full name from the query string: 
+
+```
+<div class="wp-styled-name-hero-thing" id="vs-chart-hero-name">Fake Name Here</div>
+```
+
+The plugin will parse the document, find the id `vs-chart-hero-name` and concatenate the "full name" from the query string and insert it directly as the only input side of the corresponding `div`, replacing the template text of `Fake Name Here` with the values passed in the query string parameters as `f` & `l`. 
+
 Now, you can append the following querystring parameters to your full URL and the graph will be built: 
 
 - `/?f=John&l=Doe&b=67&cr=88&co=99&t=80&d=03-20-2019`
