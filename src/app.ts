@@ -56,7 +56,7 @@ export class AppModule {
         },
 
         xAxis: {
-            categories: ['Courageous', 'Creative', 'Collaborative', 'Tactical'],
+            categories: ['Courageous', 'Creative', 'Collaborative', 'Contemplative'],
             labels: {
                 align: 'center',
                 reserveSpace: false,
@@ -75,6 +75,7 @@ export class AppModule {
             gridLineInterpolation: 'polygon',
             minorTickWidth: 0,
             min: 0,
+            max: 30,
             labels: {
                 enabled: false
             }
