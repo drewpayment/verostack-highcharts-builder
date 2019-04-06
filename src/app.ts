@@ -29,87 +29,116 @@ export class AppModule {
 
     highcharts:typeof Highcharts = Highcharts;
     forceUpdate = false;
-    chartOptions:Highcharts.Options = {
-        chart: {
-            polar: true,
-            type: 'line',
-            margin: [0, 0, 0, 0],
-            spacing: [0, 0, 0, 0]
-        },
-        plotOptions: {
-            line: {
-                color: '#000',
-                lineWidth: 2
-            }
-        },
-        credits: {
-            enabled: false
-        },
-        title: {
-            text: '',
-            x: -80
-        },
 
-        pane: {
-            size: '100%',
-            startAngle: -45
-        },
-
-        xAxis: {
-            categories: ['Courageous', 'Creative', 'Collaborative', 'Contemplative'],
-            labels: {
-                align: 'center',
-                reserveSpace: false,
-                // distance: -5,
-                style: {
-                    color: '#FFF',
-                    fontSize: '16px',
-                    fontWeight: '600',
-                    // padding: '0'
-                }
-            },
-            gridLineWidth: 1
-        },
-
-        yAxis: {
-            gridLineInterpolation: 'polygon',
-            minorTickWidth: 0,
-            min: 0,
-            max: 30,
-            labels: {
-                enabled: false
-            }
-        } as Highcharts.YAxisOptions,
-
-        tooltip: {
-            shared: true,
-            pointFormat: '<span style="color:{series.color}">{series.name}: <b>{point.y:,.0f}</b><br/>'
-        },
-
-        legend: {
-            enabled: false
-        },
-
-        series: [{
-            name: 'Score',
-            data: [],
-            pointPlacement: 'on'
-        }] as any,
-
-        responsive: {
-            rules: [{
-                condition: {
-                    maxWidth: 550
-                },
-            }]
-        }
-    };
+    container:any;
+    chart:any;
+    labelFontSize = '16px';
+    paneSize = '100%';
+    labelDistance = 15;
+    chartOptions:Highcharts.Options;
 
     constructor() {
         this.http = new HttpService();
         this.params = this.http.params;
         this.jq = jQuery;
         this.currentUrl = window.location.hostname + window.location.pathname;
+
+        // development
+        // let imageToRemove = this.jq('.fl-photo-img.wp-image-953');
+        // let container = imageToRemove.parent();
+        // let col = container.closest('.fl-col').next();
+        // col.empty();
+        // this.container = col;
+
+        // production 
+        this.container = this.jq('#vs-chart');
+
+        this.chartOptions = {
+            chart: {
+                polar: true,
+                type: 'line',
+                margin: [0, 0, 0, 0],
+                spacing: [0, 0, 0, 0]
+            },
+            plotOptions: {
+                line: {
+                    color: '#000',
+                    lineWidth: 2
+                }
+            },
+            credits: {
+                enabled: false
+            },
+            title: {
+                text: '',
+                x: -80
+            },
+    
+            pane: {
+                size: this.paneSize,
+                startAngle: -45
+            },
+    
+            xAxis: {
+                categories: ['Courageous', 'Creative', 'Collaborative', 'Contemplative'],
+                labels: {
+                    align: 'center',
+                    reserveSpace: false,
+                    distance: this.labelDistance,
+                    style: {
+                        color: '#FFF',
+                        fontSize: this.labelFontSize,
+                        fontWeight: '600',
+                        // padding: '0'
+                    }
+                },
+                gridLineWidth: 1
+            },
+    
+            yAxis: {
+                gridLineInterpolation: 'polygon',
+                minorTickWidth: 0,
+                min: 0,
+                max: 30,
+                labels: {
+                    enabled: false
+                }
+            } as Highcharts.YAxisOptions,
+    
+            tooltip: {
+                shared: true,
+                pointFormat: '<span style="color:{series.color}">{series.name}: <b>{point.y:,.0f}</b><br/>'
+            },
+    
+            legend: {
+                enabled: false
+            },
+    
+            series: [{
+                name: 'Score',
+                data: [],
+                pointPlacement: 'on'
+            }] as any,
+    
+            responsive: {
+                rules: [{
+                    condition: {
+                        maxWidth: 533
+                    },
+                    chartOptions: {
+                        pane: {
+                            size: '63%'
+                        },
+                        xAxis: {
+                            labels: {
+                                fontSize: '12px',
+                                distance: 13
+                            }
+                        }
+                    }
+                }]
+            }
+        };
 
         this._handleFormSubmit();
         this.onInit();
@@ -136,7 +165,7 @@ export class AppModule {
             }
 
             if (this.isParamsSet) {
-                this.buildChart();
+                this.buildChart(true);
             } else {
 
                 throw new Error(`No params set, cannot render chart.`);
@@ -145,31 +174,54 @@ export class AppModule {
         }
     }
 
-    private buildChart() {
-        // BUILD CHART AND PUT ON DOM
-        // temporary for testing... 
-        // let imageToRemove = this.jq('.fl-photo-img.wp-image-953');
-        // let container = imageToRemove.parent();
-        // let col = container.closest('.fl-col').next();
-        // col.empty();
-        // col.width('400px');
-        // col.height('400px');
+    private buildChart(isInitialPageLoad?:boolean) {
+        if (isInitialPageLoad) this.updateChartData();
 
-        let col = this.jq('#vs-chart');
-
-        this.updateChartData();
-
-        Highcharts.chart(col[0], this.chartOptions, 
+        this.chart = Highcharts.chart(this.container[0], this.chartOptions, 
             (<Highcharts.ChartCallbackFunction>(<unknown>this.renderTheme)));
 
-        this.jq('#vs-chart-hero-name').text(`${this.firstName} ${this.lastName}`);
-        this.jq('#vs-chart-hero-date').text(`on ${this.date}`);
-        this.jq('#vs-chart-intro-first-name').text(`Dear ${this.firstName}:`);
-        this.jq('#vs-chart-legend-courageous').text(`${this.courageous}`);
-        this.jq('#vs-chart-legend-creative').text(`${this.creative}`);
-        this.jq('#vs-chart-legend-contemplative').text(`${this.contemplative}`);
-        this.jq('#vs-chart-legend-collaborative').text(`${this.collaborative}`);
-        this.jq('#vs-chart-your-style-name').text(`${this.firstName} ${this.lastName}`);
+        if (isInitialPageLoad) {
+            this.jq('#vs-chart-hero-name').text(`${this.firstName} ${this.lastName}`);
+            this.jq('#vs-chart-hero-date').text(`on ${this.date}`);
+            this.jq('#vs-chart-intro-first-name').text(`Dear ${this.firstName}:`);
+            this.jq('#vs-chart-legend-courageous').text(`${this.courageous}`);
+            this.jq('#vs-chart-legend-creative').text(`${this.creative}`);
+            this.jq('#vs-chart-legend-contemplative').text(`${this.contemplative}`);
+            this.jq('#vs-chart-legend-collaborative').text(`${this.collaborative}`);
+            this.jq('#vs-chart-your-style-name').text(`${this.firstName} ${this.lastName}`);
+
+            this.jq(window).resize(this.handleWindowResize);
+        }
+    }
+
+    private handleWindowResize = (e) => {
+        let width = this.container.width();
+        let height = this.container.height();
+
+        if (width < 533 || height < 533) {
+            this.setMobileChartProperties();
+        } else {
+            this.setDesktopChartProperties();
+        }
+
+        this.updateChartValuesOnResize();
+    }
+
+    private setMobileChartProperties() {
+        this.paneSize = '70%';
+        this.labelDistance = 13;
+    }
+
+    private setDesktopChartProperties() {
+        this.paneSize = '100%';
+        this.labelDistance = 15;
+    }
+
+    private updateChartValuesOnResize() {
+        // this.chart.options.xAxis[0].labels.distance = this.labelDistance;
+        // this.chart.options.pane.size = this.paneSize;
+        this.container.empty();
+        this.buildChart();
     }
 
     private renderTheme = (chart:Highcharts.Chart) => {
